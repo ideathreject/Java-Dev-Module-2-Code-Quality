@@ -5,12 +5,20 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
+
+    private static final char EMPTY_CELL = ' ';
+    private static final char PLAYER_SYMBOL = 'X';
+    private static final char COMPUTER_SYMBOL = 'O';
+    private static final int BOARD_SIZE = 9;
+    private static final int MAX_CELL_INDEX = 9;
+    private static final int MIN_CELL_INDEX = 1;
+
     private final Scanner scan = new Scanner(System.in);
-    private final char[] box = new char[9];
+    private final char[] box = new char[BOARD_SIZE];
     private final Random random = new Random();
 
     public void start() {
-        Arrays.fill(box, ' ');
+        Arrays.fill(box, EMPTY_CELL);
         int winner = 0;
 
         System.out.println("Enter box number to select. Enjoy!\n");
@@ -25,14 +33,14 @@ public class Game {
 
             playerMove();
 
-            if (isWinner('X')) {
+            if (isWinner(PLAYER_SYMBOL)) {
                 winner = 1;
             } else if (isDraw()) {
                 winner = 3;
             } else {
                 computerMove();
 
-                if (isWinner('O')) {
+                if (isWinner(COMPUTER_SYMBOL)) {
                     winner = 2;
                 }
             }
@@ -50,11 +58,11 @@ public class Game {
     private void playerMove() {
         while (true) {
             byte input = scan.nextByte();
-            if (input > 0 && input < 10) {
-                if (box[input - 1] == 'X' || box[input - 1] == 'O') {
+            if (input >= MIN_CELL_INDEX && input <= MAX_CELL_INDEX) {
+                if (box[input - 1] == PLAYER_SYMBOL || box[input - 1] == COMPUTER_SYMBOL) {
                     System.out.println("That one is already in use. Enter another.");
                 } else {
-                    box[input - 1] = 'X';
+                    box[input - 1] = PLAYER_SYMBOL;
                     break;
                 }
             } else {
@@ -65,9 +73,9 @@ public class Game {
 
     private void computerMove() {
         while (true) {
-            byte rand = (byte) (random.nextInt(9) + 1);
-            if (box[rand - 1] != 'X' && box[rand - 1] != 'O') {
-                box[rand - 1] = 'O';
+            byte rand = (byte) (random.nextInt(MAX_CELL_INDEX) + 1);
+            if (box[rand - 1] != PLAYER_SYMBOL && box[rand - 1] != COMPUTER_SYMBOL) {
+                box[rand - 1] = COMPUTER_SYMBOL;
                 break;
             }
         }
@@ -86,14 +94,14 @@ public class Game {
 
     private boolean isDraw() {
         for (char c : box) {
-            if (c != 'X' && c != 'O') {
+            if (c != PLAYER_SYMBOL && c != COMPUTER_SYMBOL) {
                 return false;
             }
         }
         return true;
     }
 
-    private void printGameOverMessage(int winner) {
+    private static void printGameOverMessage(int winner) {
         switch (winner) {
             case 1 -> System.out.println("You won the game!\nCreated by Shreyas Saha. Thanks for playing!");
             case 2 -> System.out.println("You lost the game!\nCreated by Shreyas Saha. Thanks for playing!");
@@ -102,5 +110,4 @@ public class Game {
         }
         System.exit(0);
     }
-
 }
